@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRT — Planet Renox Time</title>
+<meta name="description" content="Planet Renox Time, live: milliseconds since 1998-03-14 03:00:00 UTC, in every unit, over a day/night map of Earth.">
+<meta name="theme-color" content="#030815">
+<meta property="og:title" content="PRT — Planet Renox Time">
+<meta property="og:description" content="Milliseconds since 1998-03-14 03:00:00 UTC, live.">
+<meta property="og:image" content="https://time.planetrenox.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"ortus":"https://cdn.jsdelivr.net/npm/ortus@0.1/index.js"}}</script>
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header class="top wrap">
+  <a class="brand" href="/"><span class="orb"></span>PRT</a>
+  <nav><a href="https://www.npmjs.com/package/ortus">ortus ↗</a><a href="https://github.com/planetrenox/ortus">GitHub ↗</a></nav>
+</header>
+
+<main class="wrap" role="timer">
+  <section class="hero">
+    <h1>Planet Renox Time</h1>
+    <p class="sub">Milliseconds since <b>1998-03-14 03:00:00 UTC</b></p>
+    <div class="map">
+      <canvas id="map" aria-label="Dot map of Earth showing current daylight"></canvas>
+      <div id="sun" title="Subsolar point"></div>
+      <div id="tip" hidden></div>
+    </div>
+    <div class="now">
+      <div id="ms" class="big">–</div>
+      <div class="big-u">ms <span>official unit</span></div>
+    </div>
+  </section>
+
+  <section class="units" id="units"></section>
+
+  <section class="grid">
+    <article class="card"><h2>Epoch</h2><p class="v">1998-03-14 03:00:00 UTC</p><p class="m" id="ep"></p></article>
+    <article class="card"><h2>Now</h2><p class="v" id="utc">–</p><p class="m" id="loc"></p></article>
+    <article class="card"><h2>Elapsed</h2><p class="v" id="age">–</p><p class="m" id="unix"></p></article>
+    <article class="card"><h2>PRT day</h2><p class="v" id="day">–</p><div class="bar"><i id="dayb"></i></div><p class="m" id="daym"></p></article>
+    <article class="card"><h2>PRT week</h2><p class="v" id="wk">–</p><div class="pips" id="pips"></div><p class="m" id="wkm"></p></article>
+    <article class="card"><h2>Sun</h2><p class="v" id="ss">–</p><p class="m" id="ssm"></p></article>
+    <article class="card wide"><h2>Upcoming milestones</h2><ol id="miles"></ol></article>
+    <article class="card wide conv">
+      <h2>Convert</h2>
+      <div class="cv">
+        <div>
+          <label>Date → PRT <span class="tz"><input type="checkbox" id="cz"> UTC</span></label>
+          <div class="row"><input type="datetime-local" id="cin" step="0.001"><button id="cnow">now</button></div>
+          <dl id="cout"></dl>
+        </div>
+        <div>
+          <label>PRT → Date</label>
+          <div class="row"><input id="pin" inputmode="numeric" spellcheck="false" value="1000000000000"><select id="pu"></select></div>
+          <dl id="pout"></dl>
+        </div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>Integers, floored toward −∞ · negative before the epoch · 1 d = 86,400,000 ms · 1 w = 7 d · leap seconds ignored</p>
+  <button class="npm" id="npm">npm i ortus</button>
+</footer>
+<div id="toast" hidden></div>
+<noscript><p class="wrap">PRT needs JavaScript to tick.</p></noscript>
+</body>
+</html>
