@@ -2,7 +2,7 @@
 
 Live **PRT (Planet Renox Time)**, milliseconds since `1998-03-14T03:00:00.000Z`, in every [ortus](https://github.com/planetrenox/ortus) unit (`ms s m h d w`), over a dot map of Earth lit by the real-time sun.
 
-Also on the page: PRT day/week progress, upcoming round-number milestones, next equinox/solstice, a subsolar marker with hover readout (lat/lon, sun altitude, solar time), and a Date ⇄ PRT converter.
+Also on the page: PRT day/week progress, upcoming round-number milestones, next equinox/solstice, a subsolar marker with hover readout (lat/lon, sun altitude, solar time), a Date ⇄ PRT converter, and a live API explorer.
 
 ## API
 

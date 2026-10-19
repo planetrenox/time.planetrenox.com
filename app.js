@@ -204,3 +204,32 @@ $('cin').value = '1970-01-01T00:00:00.000' // Unix epoch, shows PRT going negati
 $('cin').oninput = $('cz').onchange = conv
 $('pin').oninput = $('pu').onchange = pconv
 conv(), pconv()
+
+// API explorer
+const EPS = [
+  ['/api/now', '/api/now', 'Current PRT in every unit, JSON'],
+  ['/api/now/d', '/api/now/{unit}', 'One unit, plain text'],
+  ['/api/from/2010-06-01', '/api/from/{date}', 'PRT at an ISO date or Unix ms'],
+  ['/api/to/1000000000000', '/api/to/{n}/{unit?}', 'Date at a PRT value, unit defaults to ms'],
+  ['/api', '/api', 'Epoch, units, endpoint list'],
+]
+$('eps').innerHTML = EPS.map(([p, s, d]) => `<li><button data-ep="${p}"><code>${s.replace(/\{[^}]+\}/g, '<em>$&</em>')}</code><span>${d}</span></button></li>`).join('')
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+const hl = s => esc(s).replace(/("[^"]*")(\s*:)?|(-?\d+(?:\.\d+)?(?:e[+-]?\d+)?)/gi, (m, q, k, n) => q ? (k ? `<b>${q}</b>${k}` : `<em>${q}</em>`) : `<i>${n}</i>`)
+let ep = EPS[0][0]
+const tryEp = async p => {
+  ep = p
+  document.querySelectorAll('[data-ep]').forEach(b => b.classList.toggle('on', b.dataset.ep == p))
+  $('rq').innerHTML = `GET ${esc(p)}`
+  try {
+    const r = await fetch(p), t = await r.text()
+    if (ep != p) return
+    let o
+    try { o = JSON.stringify(JSON.parse(t), null, 2) } catch { o = t.trim() }
+    $('rq').innerHTML = `GET ${esc(p)} <b>${r.status}</b>`
+    $('rs').innerHTML = hl(o)
+  } catch (e) { ep == p && ($('rs').innerHTML = `<span class="err">${esc(e.message)}</span>`) }
+}
+$('eps').addEventListener('click', e => { const b = e.target.closest('[data-ep]'); b && tryEp(b.dataset.ep) })
+$('curl').addEventListener('click', () => navigator.clipboard?.writeText(`curl ${location.origin}${ep}`).then(() => toast('Copied curl')))
+new IntersectionObserver((es, io) => es[0].isIntersecting && (io.disconnect(), tryEp(EPS[0][0]))).observe($('api'))

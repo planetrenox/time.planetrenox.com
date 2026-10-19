@@ -22,7 +22,7 @@
 <body>
 <header class="top wrap">
   <a class="brand" href="/"><span class="orb"></span>PRT</a>
-  <nav><a href="/api">API</a><a href="https://www.npmjs.com/package/ortus">ortus ↗</a><a href="https://github.com/planetrenox/ortus">GitHub ↗</a></nav>
+  <nav><a href="#api">API</a><a href="https://www.npmjs.com/package/ortus">ortus ↗</a><a href="https://github.com/planetrenox/ortus">GitHub ↗</a></nav>
 </header>
 
 <main class="wrap" role="timer">
@@ -59,6 +59,17 @@
           <label>PRT → Date</label>
           <div class="row"><input id="pin" inputmode="numeric" spellcheck="false" value="1000000000000"><select id="pu"></select></div>
           <dl id="pout"></dl>
+        </div>
+      </div>
+    </article>
+    <article class="card wide" id="api">
+      <h2>API</h2>
+      <p class="m">Free JSON over HTTPS. No key, CORS open. Pick an endpoint to try it live.</p>
+      <div class="api">
+        <ul id="eps"></ul>
+        <div class="res">
+          <div class="rq"><code id="rq"></code><button id="curl">copy curl</button></div>
+          <pre id="rs"></pre>
         </div>
       </div>
     </article>
