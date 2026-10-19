@@ -37,6 +37,8 @@ h1 { font-weight: 500; font-size: clamp(28px, 4.4vw, 48px); letter-spacing: -.02
 }
 #map { display: block; width: 100%; aspect-ratio: 360 / 142; cursor: crosshair; touch-action: pan-y }
 #sun { position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px 3px #bfe8ff, 0 0 40px 12px rgba(80, 170, 255, .55); pointer-events: none }
+#sun span { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font: 500 10px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #bfe3ff; white-space: nowrap; text-shadow: 0 0 8px #030815 }
+#sun.r span { left: auto; right: 18px }
 #sun::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1px solid rgba(180, 225, 255, .8); animation: ping 2.6s ease-out infinite }
 @keyframes ping { to { inset: -26px; opacity: 0 } }
 #tip { position: absolute; transform: translate(14px, -50%); padding: 7px 10px; border-radius: 8px; background: rgba(6, 16, 42, .88); border: 1px solid var(--line); backdrop-filter: blur(8px); font: 12px/1.45 var(--mono); color: var(--mute); white-space: nowrap; pointer-events: none }
@@ -56,6 +58,7 @@ h1 { font-weight: 500; font-size: clamp(28px, 4.4vw, 48px); letter-spacing: -.02
 .unit:hover { border-color: rgba(127, 214, 255, .45); transform: translateY(-2px) }
 .ul { display: flex; justify-content: space-between; color: var(--mute); font-size: 13px; letter-spacing: .06em; text-transform: uppercase }
 .ul em { font: 500 12px var(--mono); color: var(--cyan); text-transform: none }
+.ul b { font-weight: 400; color: var(--dim); margin-right: 10px }
 .uv { font: 400 clamp(18px, 1.9vw, 26px)/1.1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap }
 .un { font: 12px var(--mono); color: var(--dim) }
 .bar { display: block; height: 3px; border-radius: 3px; background: rgba(90, 140, 255, .14); overflow: hidden }
@@ -67,8 +70,7 @@ h1 { font-weight: 500; font-size: clamp(28px, 4.4vw, 48px); letter-spacing: -.02
 h2 { font: 500 12px var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px }
 .v { font: 400 18px/1.35 var(--mono); font-variant-numeric: tabular-nums }
 .m { margin-top: 8px; font-size: 13px; color: var(--mute) }
-.card .bar { margin-top: 12px }
-.pips { display: flex; gap: 5px; margin-top: 12px }
+.pips { display: flex; gap: 5px }
 .pips i { flex: 1; height: 3px; border-radius: 3px; background: rgba(90, 140, 255, .14) }
 .pips .on { background: #2f6bff }
 .pips .cur { background: var(--cyan); box-shadow: 0 0 10px var(--cyan) }
@@ -115,6 +117,7 @@ footer { display: flex; align-items: center; justify-content: space-between; gap
   .unit:last-child { grid-column: span 2 }
   .grid, .cv, #miles { grid-template-columns: minmax(0, 1fr) }
   .wide { grid-column: auto }
+  .v { font-size: 16px }
   .map { margin: 22px -20px 0 }
   footer { flex-direction: column; align-items: flex-start }
 }

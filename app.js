@@ -14,7 +14,7 @@ const dur = t => {
   return (d ? d + 'd ' : '') + [floor(s / 3600) % 24, floor(s / 60) % 60, s % 60].map(pad).join(':')
 }
 const SHORT = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
-const LONG = { ...SHORT, second: '2-digit', timeZoneName: 'short' }
+const LONG = { weekday: 'short', ...SHORT, second: '2-digit', timeZoneName: 'short' }
 const loc = (t, o = SHORT) => new Date(t).toLocaleString(undefined, o)
 const iso = t => new Date(t).toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
 const set = (id, h) => { const e = $(id); e.innerHTML != h && (e.innerHTML = h) }
@@ -95,6 +95,7 @@ const draw = () => {
   }
   B.forEach((p, i) => (cx.fillStyle = COL[i], cx.fill(p)))
   sunEl.style.left = sx / W * 100 + '%', sunEl.style.top = sy / H * 100 + '%'
+  sunEl.classList.toggle('r', sx / W > .85)
 }
 
 cv.addEventListener('pointermove', e => {
@@ -112,7 +113,7 @@ setInterval(draw, 5e3)
 
 // Unit cards
 const KS = Object.keys(UNITS).slice(1)
-$('units').innerHTML = KS.map(u => `<button class="unit" data-u="${u}"><span class="ul">${UNITS[u]}<em>${u}</em></span><span class="uv" id="v${u}">–</span><span class="bar"><i id="b${u}"></i></span><span class="un" id="n${u}"></span></button>`).join('')
+$('units').innerHTML = KS.map(u => `<button class="unit" data-u="${u}"><span class="ul">${UNITS[u]}<em>${u == 'w' ? '<b id="wd"></b>' : ''}${u}</em></span><span class="uv" id="v${u}">–</span>${u == 'w' ? `<span class="pips">${'<i></i>'.repeat(7)}</span>` : `<span class="bar"><i id="b${u}"></i></span>`}<span class="un" id="n${u}"></span></button>`).join('')
 const last = {}
 const toast = m => { const t = $('toast'); t.textContent = m, t.hidden = false, clearTimeout(toast.t), toast.t = setTimeout(() => t.hidden = true, 1400) }
 const copy = v => navigator.clipboard?.writeText(String(v)).then(() => toast('Copied ' + nf.format(v)))
@@ -124,9 +125,8 @@ $('ms').addEventListener('click', () => copy(PRT.now()))
 $('npm').addEventListener('click', () => navigator.clipboard?.writeText('npm i ortus').then(() => toast('Copied npm i ortus')))
 
 // Static bits
-$('ep').textContent = `A Saturday · ${loc(E, LONG)} local`
-$('pips').innerHTML = '<i></i>'.repeat(7)
-const pips = [...$('pips').children]
+$('ep').textContent = loc(E, { weekday: 'short', ...SHORT, timeZoneName: 'short' })
+const pips = [...document.querySelectorAll('.pips i')]
 
 // Milestones: next round number per unit (2 significant digits), plus the trillion
 const miles = now => {
@@ -152,22 +152,12 @@ const age = now => {
 }
 
 const slow = now => {
-  set('utc', iso(now))
-  set('loc', loc(now, LONG))
-  set('age', age(now))
-  set('unix', `Unix ${num(floor(now / 1e3))} s · epoch ${num(E)} ms`)
-  const d = PRT.fromUnixMs(now, 'd'), d0 = PRT.toUnixMs(d, 'd'), d1 = PRT.toUnixMs(d + 1, 'd')
-  set('day', `#${num(d)}`)
-  $('dayb').style.transform = `scaleX(${(now - d0) / (d1 - d0)})`
-  set('daym', `began ${loc(d0, { hour: '2-digit', minute: '2-digit' })} · ends in ${dur(d1 - now)}`)
-  const w = PRT.fromUnixMs(now, 'w'), wd = ((d % 7) + 7) % 7
-  set('wk', `#${num(w)} · day ${wd + 1}/7`)
-  set('wkm', `Weeks start Saturday 03:00 UTC · next in ${dur(PRT.toUnixMs(w + 1, 'w') - now)}`)
-  pips.forEach((p, i) => p.className = i < wd ? 'on' : i == wd ? 'cur' : '')
-  const s = sun(now)
+  set('loc', loc(now, { ...LONG, weekday: undefined }))
+  set('utc', `${iso(now)} · Unix ${num(floor(now / 1e3))} s`)
+  set('age', `${age(now)} ago · Unix ${num(E)} ms`)
+  const s = sun(now), [sn, st] = season(now)
   set('ss', `${ll(s.dec / D, 'N', 'S')} ${ll(s.lon / D, 'E', 'W')}`)
-  const [sn, st] = season(now)
-  set('ssm', `Subsolar point · declination ${(s.dec / D).toFixed(2)}°<br>${sn} ≈ ${loc(st)} · in ${dur(st - now)}`)
+  set('ssm', `${sn} in ${dur(st - now)}<br>≈ ${loc(st)}`)
   set('miles', miles(now).map(([t, l]) => `<li><span class="mv">${l.join(' <s>=</s> ')}</span><span class="mt">${loc(t)}</span><span class="mc">in ${dur(t - now)}</span></li>`).join(''))
 }
 
@@ -180,7 +170,9 @@ const tick = () => {
   for (const u of KS) {
     const v = PRT.fromUnixMs(now, u), a = PRT.toUnixMs(v, u), b = PRT.toUnixMs(v + 1, u)
     last[u] != v && ($('v' + u).innerHTML = num(last[u] = v))
-    $('b' + u).style.transform = `scaleX(${(now - a) / (b - a)})`
+    const wd = floor((now - a) / 864e5)
+    u == 'w' ? (pips.forEach((p, i, c) => (c = i < wd ? 'on' : i == wd ? 'cur' : '', p.className != c && (p.className = c))), set('wd', `day ${wd + 1}/7`))
+      : $('b' + u).style.transform = `scaleX(${(now - a) / (b - a)})`
     set('n' + u, u == 's' ? `next in ${((b - now) / 1e3).toFixed(1)}s` : `next in ${dur(b - now)}`)
   }
   floor(now / 1e3) != sec && slow(now, sec = floor(now / 1e3))
@@ -204,12 +196,11 @@ const conv = () => {
 const pconv = () => {
   try {
     const n = Number($('pin').value.replace(/[\s,_]/g, '')), t = PRT.toUnixMs(n, $('pu').value)
-    $('pout').innerHTML = dl([['UTC', iso(t)], ['local', loc(t, LONG)], ['day', new Date(t).toLocaleDateString(undefined, { weekday: 'long' })], ['unix', num(t) + ' ms']])
+    $('pout').innerHTML = dl([['UTC', iso(t)], ['local', loc(t, LONG)], ['unix', num(t) + ' ms']])
   } catch (e) { $('pout').innerHTML = err(e) }
 }
-const fill = () => $('cin').value = $('cz').checked ? new Date().toISOString().slice(0, 23) : toLocalInput(Date.now())
-$('cnow').onclick = () => (fill(), conv())
-$('cz').onchange = () => (fill(), conv())
-$('cin').oninput = conv
+$('cnow').onclick = () => ($('cin').value = $('cz').checked ? new Date().toISOString().slice(0, 23) : toLocalInput(Date.now()), conv())
+$('cin').value = '1970-01-01T00:00:00.000' // Unix epoch, shows PRT going negative
+$('cin').oninput = $('cz').onchange = conv
 $('pin').oninput = $('pu').onchange = pconv
-fill(), conv(), pconv()
+conv(), pconv()

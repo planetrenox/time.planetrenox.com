@@ -31,7 +31,7 @@
     <p class="sub">Milliseconds since <b>1998-03-14 03:00:00 UTC</b></p>
     <div class="map">
       <canvas id="map" aria-label="Dot map of Earth showing current daylight"></canvas>
-      <div id="sun" title="Subsolar point"></div>
+      <div id="sun" title="Sun directly overhead"><span>sun overhead</span></div>
       <div id="tip" hidden></div>
     </div>
     <div class="now">
@@ -43,18 +43,15 @@
   <section class="units" id="units"></section>
 
   <section class="grid">
-    <article class="card"><h2>Epoch</h2><p class="v">1998-03-14 03:00:00 UTC</p><p class="m" id="ep"></p></article>
-    <article class="card"><h2>Now</h2><p class="v" id="utc">–</p><p class="m" id="loc"></p></article>
-    <article class="card"><h2>Elapsed</h2><p class="v" id="age">–</p><p class="m" id="unix"></p></article>
-    <article class="card"><h2>PRT day</h2><p class="v" id="day">–</p><div class="bar"><i id="dayb"></i></div><p class="m" id="daym"></p></article>
-    <article class="card"><h2>PRT week</h2><p class="v" id="wk">–</p><div class="pips" id="pips"></div><p class="m" id="wkm"></p></article>
-    <article class="card"><h2>Sun</h2><p class="v" id="ss">–</p><p class="m" id="ssm"></p></article>
+    <article class="card"><h2>Now</h2><p class="v" id="loc">–</p><p class="m" id="utc"></p></article>
+    <article class="card"><h2>Epoch, your time</h2><p class="v" id="ep">–</p><p class="m" id="age"></p></article>
+    <article class="card"><h2>Sun overhead</h2><p class="v" id="ss">–</p><p class="m" id="ssm"></p></article>
     <article class="card wide"><h2>Upcoming milestones</h2><ol id="miles"></ol></article>
     <article class="card wide conv">
       <h2>Convert</h2>
       <div class="cv">
         <div>
-          <label>Date → PRT <span class="tz"><input type="checkbox" id="cz"> UTC</span></label>
+          <label>Date → PRT <span class="tz"><input type="checkbox" id="cz" checked> UTC</span></label>
           <div class="row"><input type="datetime-local" id="cin" step="0.001"><button id="cnow">now</button></div>
           <dl id="cout"></dl>
         </div>
@@ -69,7 +66,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Integers, floored toward −∞ · negative before the epoch · 1 d = 86,400,000 ms · 1 w = 7 d · leap seconds ignored</p>
+  <p>Integers, floored toward −∞ · negative before the epoch · days start 03:00 UTC, weeks on Saturdays · 1 d = 86,400,000 ms · leap seconds ignored</p>
   <button class="npm" id="npm">npm i ortus</button>
 </footer>
 <div id="toast" hidden></div>
